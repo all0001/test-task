@@ -1,6 +1,7 @@
-from typing import Dict, Any
-import requests
 import logging
+from typing import Any, Dict
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +15,7 @@ class APIClient:
     def fetch_report(self) -> Dict[str, Any]:
         logger.info("Fetching report from API")
         response = requests.get(
-            self.base_url,
-            headers={'X-API-Key': self.api_key},
-            timeout=self.timeout
+            self.base_url, headers={"X-API-Key": self.api_key}, timeout=self.timeout
         )
         response.raise_for_status()
         return response.json()

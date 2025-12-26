@@ -1,6 +1,7 @@
+import os
 from dataclasses import dataclass
 from functools import lru_cache
-import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,19 +18,19 @@ class Config:
     email_recipient: str
     telegram_token: str
     telegram_chat_id: str
-    excel_filename: str = 'phones.xlsx'
+    excel_filename: str = "phones.xlsx"
 
     @classmethod
     @lru_cache(maxsize=1)
-    def from_env(cls) -> 'Config':
+    def from_env(cls) -> "Config":
         return cls(
-            api_url=os.getenv('API_URL', ''),
-            api_key=os.getenv('API_KEY', ''),
-            smtp_server=os.getenv('SMTP_SERVER', ''),
-            smtp_port=int(os.getenv('SMTP_PORT', '587')),
-            email_sender=os.getenv('EMAIL_SENDER', ''),
-            email_password=os.getenv('EMAIL_PASSWORD', ''),
-            email_recipient=os.getenv('EMAIL_RECIPIENT', ''),
-            telegram_token=os.getenv('TELEGRAM_TOKEN', ''),
-            telegram_chat_id=os.getenv('TELEGRAM_CHAT_ID', ''),
+            api_url=os.getenv("API_URL", ""),
+            api_key=os.getenv("API_KEY", ""),
+            smtp_server=os.getenv("SMTP_SERVER", ""),
+            smtp_port=int(os.getenv("SMTP_PORT", "587")),
+            email_sender=os.getenv("EMAIL_SENDER", ""),
+            email_password=os.getenv("EMAIL_PASSWORD", ""),
+            email_recipient=os.getenv("EMAIL_RECIPIENT", ""),
+            telegram_token=os.getenv("TELEGRAM_TOKEN", ""),
+            telegram_chat_id=os.getenv("TELEGRAM_CHAT_ID", ""),
         )

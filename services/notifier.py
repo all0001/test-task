@@ -1,12 +1,13 @@
-from abc import ABC, abstractmethod
-from typing import Optional
 import logging
-import requests
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
+from abc import ABC, abstractmethod
 from datetime import datetime
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from typing import Optional
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +28,8 @@ class TelegramNotifier(Notifier):
         try:
             response = requests.post(
                 self.base_url,
-                json={'chat_id': self.chat_id, 'text': message},
-                timeout=10
+                json={"chat_id": self.chat_id, "text": message},
+                timeout=10,
             )
             response.raise_for_status()
             logger.info(f"Telegram notification sent: {message[:50]}...")
@@ -43,7 +44,7 @@ class EmailNotifier:
         smtp_port: int,
         sender: str,
         password: str,
-        recipient: str
+        recipient: str,
     ):
         self.smtp_server = smtp_server
         self.smtp_port = smtp_port
@@ -52,31 +53,26 @@ class EmailNotifier:
         self.recipient = recipient
 
     def send_with_attachment(
-        self,
-        filename: str,
-        subject: Optional[str] = None
+        self, filename: str, subject: Optional[str] = None
     ) -> None:
         logger.info(f"Sending email with attachment: {filename}")
         subject = subject or f'Report - {datetime.now().strftime("%Y-%m-%d")}'
-        
-        msg = MIMEMultipart()
-        msg['From'] = self.sender
-        msg['To'] = self.recipient
-        msg['Subject'] = subject
 
-        with open(filename, 'rb') as f:
-            part = MIMEBase('application', 'octet-stream')
+        msg = MIMEMultipart()
+        msg["From"] = self.sender
+        msg["To"] = self.recipient
+        msg["Subject"] = subject
+
+        with open(filename, "rb") as f:
+            part = MIMEBase("application", "octet-stream")
             part.set_payload(f.read())
             encoders.encode_base64(part)
-            part.add_header(
-                'Content-Disposition',
-                f'attachment; filename={filename}'
-            )
+            part.add_header("Content-Disposition", f"attachment; filename={filename}")
             msg.attach(part)
 
         with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
             server.starttls()
             server.login(self.sender, self.password)
             server.send_message(msg)
-        
+
         logger.info("Email sent successfully")
