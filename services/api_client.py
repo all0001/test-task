@@ -1,6 +1,5 @@
 import logging
-from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 import requests
 
@@ -9,20 +8,19 @@ from config import config
 logger = logging.getLogger(__name__)
 
 
-class BaseAPIService(ABC):
+class BaseAPIService:
     host: str
     timeout: int
-    headers: Dict[str, str] = {}
+    headers: dict[str, str] = {}
     endpoint = ""
 
-    @abstractmethod
     def authorize(self, **kwargs) -> None:
         pass
 
-    def prepare_request_data(self, **kwargs) -> Dict[str, Any]:
+    def prepare_request_data(self, **kwargs) -> dict[str, Any]:
         return kwargs
 
-    def finalize_response(self, response: requests.Response) -> Dict[str, Any]:
+    def finalize_response(self, response: requests.Response) -> dict[str, Any]:
         response.raise_for_status()
         return response.json()
 
@@ -52,7 +50,7 @@ class ReportService(BaseAPIService):
     def authorize(self, **kwargs) -> None:
         self.headers["X-API-Key"] = self.api_key
 
-    def fetch_report(self) -> Dict[str, Any]:
+    def fetch_report(self) -> dict[str, Any]:
         logger.info("Fetching report")
         response = self._make_request(method="GET")
         return self.finalize_response(response)

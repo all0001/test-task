@@ -21,7 +21,7 @@ class ReportPipeline:
         self.telegram = TelegramNotifier(
             config.telegram_api_url,
             config.telegram_token,
-            config.telegram_chat_id
+            config.telegram_chat_id,
         )
         self.email = EmailNotifier(
             config.smtp_server,

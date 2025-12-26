@@ -1,7 +1,7 @@
 import logging
 import os
 from contextlib import contextmanager
-from typing import List
+from typing import Generator
 
 import pandas as pd
 
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class ExcelManager:
     @staticmethod
-    def create_excel(phones: List[str], filename: str) -> str:
+    def create_excel(phones: list[str], filename: str) -> str:
         logger.info(f"Creating Excel file: {filename}")
         df = pd.DataFrame({"Phone Numbers": phones})
         df.to_excel(filename, index=False)
@@ -18,7 +18,7 @@ class ExcelManager:
 
     @staticmethod
     @contextmanager
-    def temporary_excel(phones: List[str], filename: str):
+    def temporary_excel(phones: list[str], filename: str) -> Generator[str, None, None]:
         excel_file = ExcelManager.create_excel(phones, filename)
 
         try:

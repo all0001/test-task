@@ -1,24 +1,21 @@
 import logging
 import smtplib
-from abc import ABC, abstractmethod
 from datetime import datetime
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
-from typing import Optional
+from typing import Protocol
 
 import requests
 
 logger = logging.getLogger(__name__)
 
 
-class Notifier(ABC):
-    @abstractmethod
-    def send(self, message: str) -> None:
-        pass
+class Notifier(Protocol):
+    def send(self, message: str) -> None: ...
 
 
-class TelegramNotifier(Notifier):
+class TelegramNotifier:
     def __init__(self, api_url: str, token: str, chat_id: str):
         self.token = token
         self.chat_id = chat_id
@@ -52,9 +49,7 @@ class EmailNotifier:
         self.password = password
         self.recipient = recipient
 
-    def send_with_attachment(
-        self, filename: str, subject: Optional[str] = None
-    ) -> None:
+    def send_with_attachment(self, filename: str, subject: str | None = None) -> None:
         logger.info(f"Sending email with attachment: {filename}")
         subject = subject or f'Report - {datetime.now().strftime("%Y-%m-%d")}'
 
