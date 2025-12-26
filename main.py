@@ -1,7 +1,7 @@
 import logging
 
-from config import Config
-from services.api_client import APIClient
+from config import config
+from services.api_client import ReportService
 from services.notifier import EmailNotifier, TelegramNotifier
 from services.report import ReportProcessor
 from utils.excel import ExcelManager
@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 class ReportPipeline:
-    def __init__(self, config: Config):
+    def __init__(self):
         self.config = config
-        self.api_client = APIClient(config.api_url, config.api_key)
+        self.report_service = ReportService()
         self.telegram = TelegramNotifier(
             config.telegram_api_url,
             config.telegram_token,
@@ -37,7 +37,7 @@ class ReportPipeline:
         logger.info("Pipeline execution started")
 
         try:
-            report = self.api_client.fetch_report()
+            report = self.report_service.fetch_report()
             phones = self.processor.extract_unique_phones(report)
             print(f"unique phones: {phones}")
             with ExcelManager.temporary_excel(
@@ -56,8 +56,7 @@ class ReportPipeline:
 
 
 def main() -> None:
-    config = Config.from_env()
-    pipeline = ReportPipeline(config)
+    pipeline = ReportPipeline()
     pipeline.execute()
 
 
