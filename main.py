@@ -18,7 +18,11 @@ class ReportPipeline:
     def __init__(self, config: Config):
         self.config = config
         self.api_client = APIClient(config.api_url, config.api_key)
-        self.telegram = TelegramNotifier(config.telegram_token, config.telegram_chat_id)
+        self.telegram = TelegramNotifier(
+            config.telegram_api_url,
+            config.telegram_token,
+            config.telegram_chat_id
+        )
         self.email = EmailNotifier(
             config.smtp_server,
             config.smtp_port,

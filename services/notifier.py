@@ -19,10 +19,10 @@ class Notifier(ABC):
 
 
 class TelegramNotifier(Notifier):
-    def __init__(self, token: str, chat_id: str):
+    def __init__(self, api_url: str, token: str, chat_id: str):
         self.token = token
         self.chat_id = chat_id
-        self.base_url = f"https://api.telegram.org/{token}/sendMessage"
+        self.base_url = f"{api_url}/bot{token}/sendMessage"
 
     def send(self, message: str) -> None:
         try:
